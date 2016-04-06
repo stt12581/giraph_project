@@ -19,23 +19,37 @@
 package com.cloudera.sa.giraph.examples.kmeans;
 
 import org.apache.giraph.aggregators.Aggregator;
+import java.util.List;
+import java.util.Map;
 
 public class AveragePointWritableAggregator implements Aggregator<PointWritable> {
 
-	private PointWritable sum = new PointWritable();
-	private int count = 0;
+	private PointWritable majority = new PointWritable();
+	//private int count = 0;
+	private List<Map<Integer, Integer>> dataMap = new ArrayList<Map<Integer, Integer>>();
 	
 	public void aggregate(PointWritable value) {
-		if(sum.getDimensions() == 0) {
-			sum.setData(new double[value.getDimensions()]);
+		if(dataMap.size() == 0) {
+			majority.setData(new double[value.getDimensions()]);
+			for(int i=0; i<value.getDimensions(); i++){
+				Map<Integer,Integer> subMap = new HashMap<Integer, Integer>();
+    			dataMap.add(i,subMap);
+    		}
 		}
 		if(value.getDimensions() == 0) {
 			return;
 		}
+
 		for(int i = 0; i < value.getDimensions(); i++) {
-			sum.getData()[i] = sum.getData()[i] + value.getData()[i];
+			//sum.getData()[i] = sum.getData()[i] + value.getData()[i];
+			Integer key = dataMap[i].get(value.getData()[i]);
+			if(key!=null){
+				dataMap.put(key, dataMap.get(key) + 1);
+			} else{
+				dataMap[i].put(value.getData()[i], 1);
+			}
 		}
-		count++;
+		//count++;
 	}
 
 	public PointWritable createInitialValue() {
@@ -43,22 +57,37 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public PointWritable getAggregatedValue() {
-		double [] data = sum.getData().clone();
-		for(int i = 0; i < data.length; i++) {
-			data[i] /= count;
+		double [] data = new double[dataMap.size()];
+		for(int i = 0; i < dataMap.size(); i++) {
+			int max = -1, dimension = -1;
+
+			Iterator it = dataMap[i].entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry)it.next();
+		        if(pair.getValue() > max){
+		        	max = pair.getValue();
+		        	dimension = pair.getKey();
+		        }
+		        it.remove(); // avoids a ConcurrentModificationException
+		    }
+		    data[i] = dimension;
 		}
+		majority.setData(data.clone());
 		return new PointWritable(data);
 	}
 
-	public void setAggregatedValue(PointWritable value) {
-		sum.setData(value.getData().clone());
-		count = value.getDimensions() == 0 ? 0 : 1;
+	public void setAggregatedValue(PointWritable value) {//double check!
+		majority.setData(value.getData().clone());
+		for(int i=0; i<dataMap.size(); i++){
+			dataMap[i].put(value.getData()[i], 1);
+		}
 	}
 
 	public void reset() {
-		sum.setData(new double[0]);
-		count = 0;
+		for(int i=0; i<dataMap.size(); i++){
+			dataMap[i].clear();
+		}
+		majority.setData(new double[dataMap.size()]);
 	}
-
 
 }

@@ -98,9 +98,9 @@ public class KMeansVertex extends Vertex<LongWritable, NodeState, NullWritable, 
 		}
 		double result = 0;
 		for(int i = 0; i < a.length; i++) {
-			result += Math.pow(b[i] - a[i], 2);
+			result += a[i]==b[i] ? 0:1;
 		}
-		return Math.sqrt(result);
+		return result;
 	}
 	
 }

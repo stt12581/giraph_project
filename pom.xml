@@ -13,10 +13,6 @@
       <id>maven</id>
       <url>http://repo.maven.apache.org/maven2/</url>
     </repository>
-    <repository>
-      <id>cloudera</id>
-      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
-    </repository>
   </repositories>
 
   <properties>
@@ -24,7 +20,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <scala.version>2.10.4</scala.version>
     <!-- find the versions in http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cdh_vd_cdh5_maven_repo.html -->
-    <hadoop.version>2.6.0-cdh5.5.0</hadoop.version>
+    <hadoop.version>2.4.1</hadoop.version>
     <spark.version>1.5.0-cdh5.5.0</spark.version>
   </properties>
 
