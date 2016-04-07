@@ -16,23 +16,26 @@
  * limitations under the License.
  */
 
-package com.cloudera.sa.giraph.examples.kmeans;
+package cs698.giraph.kmode;
 
 import org.apache.giraph.aggregators.Aggregator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 public class AveragePointWritableAggregator implements Aggregator<PointWritable> {
 
 	private PointWritable majority = new PointWritable();
 	//private int count = 0;
-	private List<Map<Integer, Integer>> dataMap = new ArrayList<Map<Integer, Integer>>();
+	private List<Map<Double, Integer>> dataMap = new ArrayList<Map<Double, Integer>>();
 	
 	public void aggregate(PointWritable value) {
 		if(dataMap.size() == 0) {
 			majority.setData(new double[value.getDimensions()]);
 			for(int i=0; i<value.getDimensions(); i++){
-				Map<Integer,Integer> subMap = new HashMap<Integer, Integer>();
+				Map<Double,Integer> subMap = new HashMap<Double, Integer>();
     			dataMap.add(i,subMap);
     		}
 		}
@@ -40,14 +43,16 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			return;
 		}
 
-		for(int i = 0; i < value.getDimensions(); i++) {
+		int i = 0;
+		for(Map<Double, Integer> map : dataMap) {
 			//sum.getData()[i] = sum.getData()[i] + value.getData()[i];
-			Integer key = dataMap[i].get(value.getData()[i]);
+			Integer key = map.get(value.getData()[i]);
 			if(key!=null){
-				dataMap.put(key, dataMap.get(key) + 1);
+				map.put(value.getData()[i], (int)key + 1);
 			} else{
-				dataMap[i].put(value.getData()[i], 1);
+				map.put(value.getData()[i], 1);
 			}
+			i++;
 		}
 		//count++;
 	}
@@ -58,19 +63,22 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 
 	public PointWritable getAggregatedValue() {
 		double [] data = new double[dataMap.size()];
-		for(int i = 0; i < dataMap.size(); i++) {
-			int max = -1, dimension = -1;
+		int i=0;
+		for(Map<Double, Integer> map : dataMap) {
+			int max = -1;
+			double dimension = -1;
 
-			Iterator it = dataMap[i].entrySet().iterator();
+			Iterator it = map.entrySet().iterator();
 		    while (it.hasNext()) {
 		        Map.Entry pair = (Map.Entry)it.next();
-		        if(pair.getValue() > max){
-		        	max = pair.getValue();
-		        	dimension = pair.getKey();
+		        if((int)pair.getValue() > max){
+		        	max = (int)pair.getValue();
+		        	dimension = (double)pair.getKey();
 		        }
 		        it.remove(); // avoids a ConcurrentModificationException
 		    }
 		    data[i] = dimension;
+		    i++;
 		}
 		majority.setData(data.clone());
 		return new PointWritable(data);
@@ -78,14 +86,16 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 
 	public void setAggregatedValue(PointWritable value) {//double check!
 		majority.setData(value.getData().clone());
-		for(int i=0; i<dataMap.size(); i++){
-			dataMap[i].put(value.getData()[i], 1);
+		int i=0;
+		for(Map<Double, Integer> map : dataMap){
+			map.put(value.getData()[i], 1);
+			i++;
 		}
 	}
 
 	public void reset() {
-		for(int i=0; i<dataMap.size(); i++){
-			dataMap[i].clear();
+		for(Map<Double, Integer> map : dataMap){
+			map.clear();
 		}
 		majority.setData(new double[dataMap.size()]);
 	}

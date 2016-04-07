@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.cloudera.sa.giraph.examples.kmeans;
+package cs698.giraph.kmode;
 
 public class Constants {
 	public static final String K = "custom.k";

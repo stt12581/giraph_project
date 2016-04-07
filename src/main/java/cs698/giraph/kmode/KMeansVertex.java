@@ -16,11 +16,16 @@
  * limitations under the License.
  */
 
-package com.cloudera.sa.giraph.examples.kmeans;
+package cs698.giraph.kmode;
 
 import java.io.IOException;
 
+import org.apache.giraph.graph.BasicComputation;
+import org.apache.giraph.worker.WorkerContext;
 import org.apache.giraph.graph.Vertex;
+
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 
@@ -28,16 +33,20 @@ import org.apache.hadoop.io.NullWritable;
  * This algorithm implements K-Means clustering. Each data point in the dataset becomes a vertex 
  * in the graph, and cluster centres are computed using custom aggregators.
  */
-public class KMeansVertex extends Vertex<LongWritable, NodeState, NullWritable, LongWritable>{
+public class KMeansVertex extends BasicComputation<
+    LongWritable, NodeState, NullWritable, LongWritable>{
 	
 	private final static LongWritable one = new LongWritable(1);
+	public static final LongConfOption K =
+      new LongConfOption("KMeansVertex.k", 1, "K Means");
 	
 	@Override
-	public void compute(Iterable<LongWritable> messages) throws IOException {
+	public void compute(Vertex<LongWritable, NodeState, NullWritable> vertex, 
+			Iterable<LongWritable> messages) throws IOException {
 		// In the first superstep, we compute the ranges of the dimensions 
 		if(getSuperstep() == 0) {
-			aggregate(Constants.MAX, getValue().getPoint());
-			aggregate(Constants.MIN, getValue().getPoint());
+			aggregate(Constants.MAX, vertex.getValue().getPoint());
+			aggregate(Constants.MIN, vertex.getValue().getPoint());
 			return;
 		} else {
 			
@@ -48,7 +57,7 @@ public class KMeansVertex extends Vertex<LongWritable, NodeState, NullWritable, 
 			if(getSuperstep() > 1) {
 				LongWritable updates = getAggregatedValue(Constants.UPDATES);
 				if(updates.get() == 0) {
-					voteToHalt();
+					vertex.voteToHalt();
 					return;
 				}
 			}
@@ -60,7 +69,7 @@ public class KMeansVertex extends Vertex<LongWritable, NodeState, NullWritable, 
 			double closestDistance = Double.MAX_VALUE;
 			for(int i = 0; i < k; i++) {
 				means[i] = getAggregatedValue(Constants.POINT_PREFIX + i);
-				double d = distance(getValue().getPoint().getData(), means[i].getData());
+				double d = distance(vertex.getValue().getPoint().getData(), means[i].getData());
 				if(d < closestDistance) {
 					closestDistance = d;
 					closest = i;
@@ -69,19 +78,19 @@ public class KMeansVertex extends Vertex<LongWritable, NodeState, NullWritable, 
 			
 			// If the choice of cluster has changed, aggregate an update so the we recompute
 			// on the next iteration.
-			if(closest != getValue().getCluster()) {
+			if(closest != vertex.getValue().getCluster()) {
 				aggregate(Constants.UPDATES, one);
 			}
 			
 			// Ensure that the closest cluster position is updated, irrespective of whether or
 			// not the choice of cluster has changed.
-			NodeState state = getValue();
+			NodeState state = vertex.getValue();
 			state.setCluster(closest);
 			state.setClusterCentre(means[closest]);
-			setValue(state);
+			vertex.setValue(state);
 			
 			// Prepare the next iteration by aggregating this point into the closest cluster.
-			aggregate(Constants.POINT_PREFIX + closest, getValue().getPoint());
+			aggregate(Constants.POINT_PREFIX + closest, vertex.getValue().getPoint());
 		}
 
 	}

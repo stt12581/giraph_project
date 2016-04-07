@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.cloudera.sa.giraph.examples.kmeans;
+package cs698.giraph.kmode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class InputFormat extends TextVertexInputFormat<LongWritable, NodeState, 
 		private long id;
 
 		@Override
-		public Vertex<LongWritable, NodeState, NullWritable, ?> getCurrentVertex() throws IOException, InterruptedException {
+		public Vertex<LongWritable, NodeState, NullWritable> getCurrentVertex() throws IOException, InterruptedException {
 
 			Text line = getRecordReader().getCurrentValue();
 			String[] parts = line.toString().split(",");
@@ -61,7 +61,7 @@ public class InputFormat extends TextVertexInputFormat<LongWritable, NodeState, 
 				NodeState value = new NodeState(new PointWritable(data));
 
 				ArrayList<Edge<LongWritable, NullWritable>> edgeIdList = new ArrayList<Edge<LongWritable, NullWritable>>();
-				Vertex<LongWritable, NodeState, NullWritable, ?> vertex = getConf().createVertex();
+				Vertex<LongWritable, NodeState, NullWritable> vertex = getConf().createVertex();
 
 				vertex.initialize(lwid, value, edgeIdList);
 				return vertex;

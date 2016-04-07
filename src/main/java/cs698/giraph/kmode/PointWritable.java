@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.cloudera.sa.giraph.examples.kmeans;
+package cs698.giraph.kmode;
 
 import java.io.DataInput;
 import java.io.DataOutput;

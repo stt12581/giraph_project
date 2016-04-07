@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.cloudera.sa.giraph.examples.kmeans;
+package cs698.giraph.kmode;
 
 import java.io.IOException;
 
@@ -42,7 +42,7 @@ public class OutputFormat extends TextVertexOutputFormat<LongWritable, NodeState
 		private Text newKey = new Text();
 		
 		public void writeVertex(
-				Vertex<LongWritable, NodeState, NullWritable, ?> vertex)
+				Vertex<LongWritable, NodeState, NullWritable> vertex)
 				throws IOException, InterruptedException {
 			
 			newKey.set(vertex.getValue().toString());
