@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.apache.giraph.graph.BasicComputation;
 import org.apache.giraph.worker.WorkerContext;
 import org.apache.giraph.graph.Vertex;
+import org.apache.giraph.conf.LongConfOption;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.FloatWritable;
