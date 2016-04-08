@@ -23,6 +23,7 @@ import org.apache.giraph.aggregators.Aggregator;
 public class MinimumPointWritableAggregator implements Aggregator<PointWritable> {
 
 	private PointWritable minimum = new PointWritable();
+	private int dimension = 2;
 	
 	public void aggregate(PointWritable value) {
 		if(minimum.getDimensions() == 0) {
@@ -45,7 +46,11 @@ public class MinimumPointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void setAggregatedValue(PointWritable value) {
-		minimum.setData(value.getData().clone());
+		minimum.setData(new double[dimension]);
+		for(int i=0; i < dimension; i++){
+			minimum.getData()[i] = Double.MIN_VALUE;
+		}
+		//minimum.setData(value.getData().clone());
 	}
 
 	public void reset() {
