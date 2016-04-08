@@ -46,11 +46,13 @@ public class MaximumPointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void setAggregatedValue(PointWritable value) {
-		maximum.setData(new double[dimension]);
-		for(int i=0; i < dimension; i++){
-			maximum.getData()[i] = Double.MAX_VALUE;
+		if(value == null){
+			maximum.setData(new double[dimension]);
+			for(int i=0; i < dimension; i++){
+				maximum.getData()[i] = Double.MAX_VALUE;
+			}
 		}
-		//maximum.setData(value.getData().clone());
+		else maximum.setData(value.getData().clone());
 	}
 
 	public void reset() {

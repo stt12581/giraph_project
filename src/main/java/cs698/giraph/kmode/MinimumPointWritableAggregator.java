@@ -46,11 +46,13 @@ public class MinimumPointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void setAggregatedValue(PointWritable value) {
-		minimum.setData(new double[dimension]);
-		for(int i=0; i < dimension; i++){
-			minimum.getData()[i] = Double.MIN_VALUE;
+		if(value == null){
+			minimum.setData(new double[dimension]);
+			for(int i=0; i < dimension; i++){
+				minimum.getData()[i] = Double.MIN_VALUE;
+			}
 		}
-		//minimum.setData(value.getData().clone());
+		else minimum.setData(value.getData().clone());
 	}
 
 	public void reset() {

@@ -85,11 +85,20 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void setAggregatedValue(PointWritable value) {//double check!
-		majority.setData(value.getData().clone());
-		int i=0;
-		for(Map<Double, Integer> map : dataMap){
-			map.put(value.getData()[i], 1);
-			i++;
+		int dimension = 2;
+		if(value == null){
+			majority.setData(new double[dimension]);
+			for(int i=0; i < dimension; i++){
+				majority.getData()[i] = Double.MIN_VALUE;
+			}
+		}
+		else{
+			majority.setData(value.getData().clone());
+			int i=0;
+			for(Map<Double, Integer> map : dataMap){
+				map.put(value.getData()[i], 1);
+				i++;
+			}
 		}
 	}
 

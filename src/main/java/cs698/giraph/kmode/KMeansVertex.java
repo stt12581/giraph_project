@@ -64,7 +64,7 @@ public class KMeansVertex extends BasicComputation<
 			}
 			
 			// If we're not stopping, we need to compute the closest cluster to this node
-			int k = getConf().getInt(Constants.K, 3);
+			int k = getConf().getInt(Constants.K, 2);
 			PointWritable [] means = new PointWritable[k];
 			int closest = -1;
 			double closestDistance = Double.MAX_VALUE;

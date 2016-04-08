@@ -34,7 +34,7 @@ public class MasterCompute extends DefaultMasterCompute {
 		registerPersistentAggregator(Constants.MIN, MinimumPointWritableAggregator.class);
 		registerPersistentAggregator(Constants.MAX, MaximumPointWritableAggregator.class);
 		registerAggregator(Constants.UPDATES, LongSumAggregator.class);
-		k = getConf().getInt(Constants.K, 0);
+		k = getConf().getInt(Constants.K, 2);
 		
 		for(int i = 0; i < k; i++) {
 			registerAggregator(Constants.POINT_PREFIX + i, AveragePointWritableAggregator.class);
