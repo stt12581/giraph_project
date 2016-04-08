@@ -19,6 +19,7 @@
 package cs698.giraph.kmode;
 
 import java.util.Random;
+import org.apache.log4j.Logger;
 
 import org.apache.giraph.aggregators.LongSumAggregator;
 import org.apache.giraph.master.DefaultMasterCompute;
@@ -27,6 +28,7 @@ public class MasterCompute extends DefaultMasterCompute {
 
 	private int k;
 	private Random r;
+	private static final Logger LOG = Logger.getLogger(MasterCompute.class);
 	
 	@Override
 	public void initialize() throws InstantiationException, IllegalAccessException {
@@ -51,6 +53,7 @@ public class MasterCompute extends DefaultMasterCompute {
 				setAggregatedValue(Constants.POINT_PREFIX + i, p);
 			}
 		}
+		LOG.info("Superstep: " + getSuperstep());
 	}
 	
 	private PointWritable random(double [] min, double [] max) {
