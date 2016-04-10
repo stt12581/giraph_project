@@ -59,12 +59,13 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			//sum.getData()[i] = sum.getData()[i] + value.getData()[i];
 			double d = value.getData()[i];
 			if(map.containsKey(d)){
-				map.put(d, map.get(d) + 1);
+				map.put(d, map.get(d)+1);//map.get(d) + 1);
 			} else{
 				map.put(d, 1);
 			}
 			i++;
 		}
+		//count++;
 	}
 
 	public PointWritable createInitialValue() {
