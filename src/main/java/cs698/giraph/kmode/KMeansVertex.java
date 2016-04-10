@@ -57,7 +57,7 @@ public class KMeansVertex extends BasicComputation<
 			// (RSS) is below a certain threshold.
 			if(getSuperstep() > 1) {
 				LongWritable updates = getAggregatedValue(Constants.UPDATES);
-				if(updates.get() == 0) {
+				if(updates.get() == 0 || getSuperstep() > 2) {
 					vertex.voteToHalt();
 					return;
 				}
@@ -100,7 +100,7 @@ public class KMeansVertex extends BasicComputation<
 	 * Standard Euclidean L2 distance metric
 	 */
 	private double distance(double [] a, double [] b) {
-		if(a.length == 0 || b.length == 0) {
+		/*if(a.length == 0 || b.length == 0) {
 			return Double.POSITIVE_INFINITY;
 		}
 		if(a.length != b.length) {
@@ -110,7 +110,18 @@ public class KMeansVertex extends BasicComputation<
 		for(int i = 0; i < a.length; i++) {
 			result += a[i]==b[i] ? 0:1;
 		}
-		return result;
+		return result;*/
+		if(a.length == 0 || b.length == 0) {
+			return Double.POSITIVE_INFINITY;
+		}
+		if(a.length != b.length) {
+			throw new IllegalArgumentException();
+		}
+		double result = 0;
+		for(int i = 0; i < a.length; i++) {
+			result += Math.pow(b[i] - a[i], 2);
+		}
+		return Math.sqrt(result);
 	}
 	
 }
