@@ -116,8 +116,16 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 				i++;
 			}
 		}*/
-		sum.setData(value.getData().clone());
-		count = value.getDimensions() == 0 ? 0 : 1;
+		int dimension = 2;
+		if(value == null){
+			sum.setData(new double[dimension]);
+			for(int i=0; i<dimension; i++){
+				sum.getData()[i] = Double.MAX_VALUE;
+			}
+		} else{
+			sum.setData(value.getData().clone());
+			count = value.getDimensions() == 0 ? 0 : 1;
+		}
 	}
 
 	public void reset() {
