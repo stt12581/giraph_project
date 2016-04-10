@@ -20,7 +20,7 @@ package cs698.giraph.kmode;
 
 import java.util.Random;
 import org.apache.log4j.Logger;
-
+import org.apache.giraph.conf.LongConfOption;
 import org.apache.giraph.aggregators.LongSumAggregator;
 import org.apache.giraph.master.DefaultMasterCompute;
 
@@ -29,6 +29,8 @@ public class MasterCompute extends DefaultMasterCompute {
 	private int k;
 	private Random r;
 	private static final Logger LOG = Logger.getLogger(MasterCompute.class);
+	public static final LongConfOption K =
+      new LongConfOption("KMeansVertex.k", 1, "K Means");
 	
 	@Override
 	public void initialize() throws InstantiationException, IllegalAccessException {
@@ -36,7 +38,8 @@ public class MasterCompute extends DefaultMasterCompute {
 		registerPersistentAggregator(Constants.MIN, MinimumPointWritableAggregator.class);
 		registerPersistentAggregator(Constants.MAX, MaximumPointWritableAggregator.class);
 		registerAggregator(Constants.UPDATES, LongSumAggregator.class);
-		k = getConf().getInt(Constants.K, 2);
+		//k = getConf().getInt(Constants.K, 2);
+		k = (int)K.get(getConf());
 		
 		for(int i = 0; i < k; i++) {
 			registerAggregator(Constants.POINT_PREFIX + i, AveragePointWritableAggregator.class);
