@@ -80,14 +80,11 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			int max = -1;
 			double dimension = -1;
 
-			Iterator it = map.entrySet().iterator();
-		    while (it.hasNext()) {
-		        Map.Entry pair = (Map.Entry)it.next();
+		    for(Map.Entry<Double, Integer> pair : map.entrySet()) {
 		        if((int)pair.getValue() > max){
 		        	max = (int)pair.getValue();
 		        	dimension = (double)pair.getKey();
 		        }
-		        //it.remove(); // avoids a ConcurrentModificationException
 		    }
 		    data[i] = dimension;
 		    i++;
