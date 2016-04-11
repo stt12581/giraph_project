@@ -87,7 +87,7 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 		        	max = (int)pair.getValue();
 		        	dimension = (double)pair.getKey();
 		        }
-		        it.remove(); // avoids a ConcurrentModificationException
+		        //it.remove(); // avoids a ConcurrentModificationException
 		    }
 		    data[i] = dimension;
 		    i++;
@@ -111,6 +111,7 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			}
 		}
 		else{
+			reset();
 			majority.setData(value.getData().clone());
 			int i=0;
 			for(Map<Double, Integer> map : dataMap){
