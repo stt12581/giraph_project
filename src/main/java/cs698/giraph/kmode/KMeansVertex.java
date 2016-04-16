@@ -29,14 +29,14 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
-
+import org.apache.log4j.Logger;
 /*
  * This algorithm implements K-Means clustering. Each data point in the dataset becomes a vertex 
  * in the graph, and cluster centres are computed using custom aggregators.
  */
 public class KMeansVertex extends BasicComputation<
     LongWritable, NodeState, NullWritable, LongWritable>{
-	
+        private static final Logger LOG = Logger.getLogger(KMeansVertex.class);	
 	private final static LongWritable one = new LongWritable(1);
 	public static final LongConfOption K =
       new LongConfOption("KMeansVertex.k", 1, "K Means");
@@ -57,7 +57,7 @@ public class KMeansVertex extends BasicComputation<
 			// (RSS) is below a certain threshold.
 			if(getSuperstep() > 1) {
 				LongWritable updates = getAggregatedValue(Constants.UPDATES);
-				if(updates.get() == 0 || getSuperstep() > 2) {
+				if(updates.get() == 0) {
 					vertex.voteToHalt();
 					return;
 				}

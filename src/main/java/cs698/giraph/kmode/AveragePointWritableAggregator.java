@@ -19,6 +19,7 @@
 package cs698.giraph.kmode;
 
 import org.apache.giraph.aggregators.Aggregator;
+import org.apache.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,11 +28,11 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class AveragePointWritableAggregator implements Aggregator<PointWritable> {
-
+	private final Logger LOG = Logger.getLogger(AveragePointWritableAggregator.class);
 	private PointWritable majority = new PointWritable();
 	//private PointWritable sum = new PointWritable();
 	//private int count = 0;
-	private List<Map<Double, Integer>> dataMap = new ArrayList<Map<Double, Integer>>();
+	private static List<Map<Double, Integer>> dataMap = new ArrayList<Map<Double, Integer>>();
 	
 	public void aggregate(PointWritable value) {
 		/*if(sum.getDimensions() == 0) {
@@ -44,6 +45,8 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			sum.getData()[i] = sum.getData()[i] + value.getData()[i];
 		}
 		count++;*/
+//LOG.info("value: " +value.getData()[0]+" "+value.getData()[1]);
+//LOG.info("datamapsize: "+dataMap.size());
 		if(dataMap.size() == 0) {
 			majority.setData(new double[value.getDimensions()]);
 			for(int i=0; i<value.getDimensions(); i++){
@@ -61,8 +64,10 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			double d = value.getData()[i];
 			if(map.containsKey(d)){
 				map.put(d, map.get(d)+1);//map.get(d) + 1);
+LOG.info("containsk: " + d+" "+map.get(d));
 			} else{
 				map.put(d, 1);
+LOG.info("notcontainsk: " + d);
 			}
 			i++;
 		}
@@ -76,6 +81,7 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	public PointWritable getAggregatedValue() {
 		double [] data = new double[dataMap.size()];
 		int i=0;
+LOG.info("getAggr start: ");
 		for(Map<Double, Integer> map : dataMap) {
 			int max = -1;
 			double dimension = -1;
@@ -85,10 +91,14 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 		        	max = (int)pair.getValue();
 		        	dimension = (double)pair.getKey();
 		        }
+			LOG.info("pair: " + pair.getKey()+" "+pair.getValue());
 		    }
 		    data[i] = dimension;
 		    i++;
+			LOG.info("dimension: " + max);
 		}
+LOG.info("getAggr stop: ");
+		//LOG.info("max data: " + data[0]+" "+data[1]);
 		majority.setData(data.clone());
 		return new PointWritable(data);
 		
@@ -100,7 +110,8 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void setAggregatedValue(PointWritable value) {//double check!
-		int dimension = 2;
+		int dimension = 5;
+		//LOG.info("datamapsizepre: " + dataMap.get(0).size());
 		if(value == null){
 			majority.setData(new double[dimension]);
 			for(int i=0; i < dimension; i++){
@@ -108,15 +119,17 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 			}
 		}
 		else{
-			reset();
+		LOG.info("setAgg value is not null");
+	//		reset();
 			majority.setData(value.getData().clone());
-			int i=0;
+		/*	int i=0;
 			for(Map<Double, Integer> map : dataMap){
-				map.put(value.getData()[i], 1);
+				double d = value.getData()[i];
+				map.put(d, map.get(d)+1);
 				i++;
-			}
+			}*/
 		}
-		
+	        //LOG.info("dataMapsizeafter: " + dataMap.get(0).size());	
 		/*int dimension = 2;
 		if(value == null){
 			sum.setData(new double[dimension]);
@@ -130,6 +143,7 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void reset() {
+		LOG.info("Rest: ");
 		for(Map<Double, Integer> map : dataMap){
 			map.clear();
 		}
