@@ -32,7 +32,7 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	private PointWritable majority = new PointWritable();
 	//private PointWritable sum = new PointWritable();
 	//private int count = 0;
-	private static List<Map<Double, Integer>> dataMap = new ArrayList<Map<Double, Integer>>();
+	private List<Map<Double, Integer>> dataMap = new ArrayList<Map<Double, Integer>>();
 	
 	public void aggregate(PointWritable value) {
 		/*if(sum.getDimensions() == 0) {
