@@ -32,7 +32,7 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	private PointWritable majority = new PointWritable();
 	//private PointWritable sum = new PointWritable();
 	//private int count = 0;
-	private List<Map<Double, Integer>> dataMap = new ArrayList<Map<Double, Integer>>();
+	private List<Map<Integer, Integer>> dataMap = new ArrayList<Map<Integer, Integer>>();
 	
 	public void aggregate(PointWritable value) {
 		/*if(sum.getDimensions() == 0) {
@@ -48,9 +48,9 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 //LOG.info("value: " +value.getData()[0]+" "+value.getData()[1]);
 //LOG.info("datamapsize: "+dataMap.size());
 		if(dataMap.size() == 0) {
-			majority.setData(new double[value.getDimensions()]);
+			majority.setData(new int[value.getDimensions()]);
 			for(int i=0; i<value.getDimensions(); i++){
-				Map<Double,Integer> subMap = new HashMap<Double, Integer>();
+				Map<Integer,Integer> subMap = new HashMap<Integer, Integer>();
     			dataMap.add(subMap);
     		}
 		}
@@ -59,9 +59,9 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 		}
 
 		int i = 0;
-		for(Map<Double, Integer> map : dataMap) {
+		for(Map<Integer, Integer> map : dataMap) {
 			//sum.getData()[i] = sum.getData()[i] + value.getData()[i];
-			double d = value.getData()[i];
+			int d = value.getData()[i];
 			if(map.containsKey(d)){
 				map.put(d, map.get(d)+1);//map.get(d) + 1);
 LOG.info("containsk: " + d+" "+map.get(d));
@@ -79,17 +79,17 @@ LOG.info("notcontainsk: " + d);
 	}
 
 	public PointWritable getAggregatedValue() {
-		double [] data = new double[dataMap.size()];
+		int [] data = new int[dataMap.size()];
 		int i=0;
 LOG.info("getAggr start: ");
-		for(Map<Double, Integer> map : dataMap) {
+		for(Map<Integer, Integer> map : dataMap) {
 			int max = -1;
-			double dimension = -1;
+			int dimension = -1;
 
-		    for(Map.Entry<Double, Integer> pair : map.entrySet()) {
+		    for(Map.Entry<Integer, Integer> pair : map.entrySet()) {
 		        if((int)pair.getValue() > max){
 		        	max = (int)pair.getValue();
-		        	dimension = (double)pair.getKey();
+		        	dimension = (int)pair.getKey();
 		        }
 			LOG.info("pair: " + pair.getKey()+" "+pair.getValue());
 		    }
@@ -113,9 +113,9 @@ LOG.info("getAggr stop: ");
 		int dimension = 5;
 		//LOG.info("datamapsizepre: " + dataMap.get(0).size());
 		if(value == null){
-			majority.setData(new double[dimension]);
+			majority.setData(new int[dimension]);
 			for(int i=0; i < dimension; i++){
-				majority.getData()[i] = Double.MIN_VALUE;
+				majority.getData()[i] = Integer.MIN_VALUE;
 			}
 		}
 		else{
@@ -144,10 +144,10 @@ LOG.info("getAggr stop: ");
 
 	public void reset() {
 		LOG.info("Rest: ");
-		for(Map<Double, Integer> map : dataMap){
+		for(Map<Integer, Integer> map : dataMap){
 			map.clear();
 		}
-		majority.setData(new double[dataMap.size()]);
+		majority.setData(new int[dataMap.size()]);
 		
 		//sum.setData(new double[0]);
 		//count = 0;

@@ -59,20 +59,19 @@ public class MasterCompute extends DefaultMasterCompute {
 		LOG.info("Superstep: " + getSuperstep());
 	}
 	
-	private PointWritable random(double [] min, double [] max) {
+	private PointWritable random(int [] min, int [] max) {
 		if(min.length != max.length) {
 			throw new IllegalArgumentException();
 		}
-		double [] randomData = new double[min.length];
+		int [] randomData = new int[min.length];
 		for(int i = 0; i < randomData.length; i++) {
 			randomData[i] = random(min[i], max[i]);
 		}
 		return new PointWritable(randomData);
 	}
 
-	private double random(double min, double max) {
-		double x = r.nextDouble();
-		double range = max - min;
-		return (x * range) + min;
+	private int random(int min, int max) {
+		int x = r.nextInt(5);
+		return x;
 	}
 }

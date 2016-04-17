@@ -27,38 +27,38 @@ import org.apache.hadoop.io.Writable;
 
 public class PointWritable implements Writable {
 
-	private double [] data = new double[0];
+	private int [] data = new int[0];
 	
 	public PointWritable() {
-		this.data = new double[0];
+		this.data = new int[0];
 	}
 	
-	public PointWritable(double [] data) {
+	public PointWritable(int [] data) {
 		this.data = data;
 	}
 	
-	public double[] getData() {
+	public int[] getData() {
 		return data;
 	}
 
-	public void setData(double[] data) {
+	public void setData(int[] data) {
 		this.data = data;
 	}
 
 	public void readFields(DataInput in) throws IOException {
 		int length = in.readInt();
 		if(data.length != length) {
-			data = new double[length];
+			data = new int[length];
 		}
 		for(int i = 0; i < data.length; i++) {
-			data[i] = in.readDouble();
+			data[i] = in.readInt();
 		}
 	}
 
 	public void write(DataOutput out) throws IOException {
 		out.writeInt(data.length);
 		for(int i = 0; i < data.length; i++) {
-			out.writeDouble(data[i]);
+			out.writeInt(data[i]);
 		}
 	}
 	

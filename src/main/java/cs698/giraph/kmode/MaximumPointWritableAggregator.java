@@ -27,7 +27,7 @@ public class MaximumPointWritableAggregator implements Aggregator<PointWritable>
 	
 	public void aggregate(PointWritable value) {
 		if(maximum.getDimensions() == 0) {
-			maximum.setData(new double[value.getDimensions()]);
+			maximum.setData(new int[value.getDimensions()]);
 		}
 		if(value.getDimensions() == 0) {
 			return;
@@ -47,16 +47,16 @@ public class MaximumPointWritableAggregator implements Aggregator<PointWritable>
 
 	public void setAggregatedValue(PointWritable value) {
 		if(value == null){
-			maximum.setData(new double[dimension]);
+			maximum.setData(new int[dimension]);
 			for(int i=0; i < dimension; i++){
-				maximum.getData()[i] = Double.MAX_VALUE;
+				maximum.getData()[i] = Integer.MAX_VALUE;
 			}
 		}
 		else maximum.setData(value.getData().clone());
 	}
 
 	public void reset() {
-		maximum.setData(new double[0]);
+		maximum.setData(new int[0]);
 	}
 	
 }

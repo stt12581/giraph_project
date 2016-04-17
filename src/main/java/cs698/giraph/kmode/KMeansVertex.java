@@ -25,7 +25,7 @@ import org.apache.giraph.worker.WorkerContext;
 import org.apache.giraph.graph.Vertex;
 import org.apache.giraph.conf.LongConfOption;
 
-import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -67,10 +67,10 @@ public class KMeansVertex extends BasicComputation<
 			int k = (int)K.get(getConf());
 			PointWritable [] means = new PointWritable[k];
 			int closest = -1;
-			double closestDistance = Double.MAX_VALUE;
+			int closestDistance = Integer.MAX_VALUE;
 			for(int i = 0; i < k; i++) {
 				means[i] = getAggregatedValue(Constants.POINT_PREFIX + i);
-				double d = distance(vertex.getValue().getPoint().getData(), means[i].getData());
+				int d = distance(vertex.getValue().getPoint().getData(), means[i].getData());
 				if(d < closestDistance) {
 					closestDistance = d;
 					closest = i;
@@ -99,29 +99,29 @@ public class KMeansVertex extends BasicComputation<
 	/*
 	 * Standard Euclidean L2 distance metric
 	 */
-	private double distance(double [] a, double [] b) {
+	private int distance(int [] a, int [] b) {
+		if(a.length == 0 || b.length == 0) {
+			return Integer.MAX_VALUE;
+		}
+		if(a.length != b.length) {
+			throw new IllegalArgumentException();
+		}
+		int result = 0;
+		for(int i = 0; i < a.length; i++) {
+			result += a[i]==b[i] ? 0:1;
+		}
+		return result;
 		/*if(a.length == 0 || b.length == 0) {
 			return Double.POSITIVE_INFINITY;
 		}
 		if(a.length != b.length) {
 			throw new IllegalArgumentException();
 		}
-		double result = 0;
-		for(int i = 0; i < a.length; i++) {
-			result += a[i]==b[i] ? 0:1;
-		}
-		return result;*/
-		if(a.length == 0 || b.length == 0) {
-			return Double.POSITIVE_INFINITY;
-		}
-		if(a.length != b.length) {
-			throw new IllegalArgumentException();
-		}
-		double result = 0;
+		int result = 0;
 		for(int i = 0; i < a.length; i++) {
 			result += Math.pow(b[i] - a[i], 2);
 		}
-		return Math.sqrt(result);
+		return Math.sqrt(result);*/
 	}
 	
 }
