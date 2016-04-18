@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+/*
+ * Change the implementation from k-means to k-mode algorithm based on https://github.com/paulmw/giraph-examples
+ */
+
 package cs698.giraph.kmode;
 
 import org.apache.giraph.aggregators.Aggregator;
@@ -98,7 +102,6 @@ public class AveragePointWritableAggregator implements Aggregator<PointWritable>
 	}
 
 	public void reset() {
-		LOG.info("Rest: ");
 		for(Map<Integer, Integer> map : dataMap){
 			map.clear();
 		}
