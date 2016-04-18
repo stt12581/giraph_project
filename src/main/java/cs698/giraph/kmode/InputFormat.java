@@ -52,7 +52,7 @@ public class InputFormat extends TextVertexInputFormat<LongWritable, NodeState, 
 
 			Text line = getRecordReader().getCurrentValue();
 			String[] parts = line.toString().split(",");
-			if(parts.length == 5) {
+			if(parts.length == 35) {
 				int [] data = new int[parts.length];
 				for(int i = 0; i< data.length; i++) {
 					data[i] = Integer.parseInt(parts[i]);

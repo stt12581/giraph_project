@@ -110,7 +110,7 @@ LOG.info("getAggr stop: ");
 	}
 
 	public void setAggregatedValue(PointWritable value) {//double check!
-		int dimension = 5;
+		int dimension = 35;
 		//LOG.info("datamapsizepre: " + dataMap.get(0).size());
 		if(value == null){
 			majority.setData(new int[dimension]);

@@ -23,7 +23,7 @@ import org.apache.giraph.aggregators.Aggregator;
 public class MaximumPointWritableAggregator implements Aggregator<PointWritable> {
 
 	private PointWritable maximum = new PointWritable();
-	private int dimension = 2;
+	private int dimension = 35;
 	
 	public void aggregate(PointWritable value) {
 		if(maximum.getDimensions() == 0) {
