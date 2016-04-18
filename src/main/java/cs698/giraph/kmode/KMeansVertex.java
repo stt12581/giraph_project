@@ -97,7 +97,7 @@ public class KMeansVertex extends BasicComputation<
 	}
 	
 	/*
-	 * Standard Euclidean L2 distance metric
+	 * Hamming distance
 	 */
 	private int distance(int [] a, int [] b) {
 		if(a.length == 0 || b.length == 0) {
@@ -111,17 +111,6 @@ public class KMeansVertex extends BasicComputation<
 			result += a[i]==b[i] ? 0:1;
 		}
 		return result;
-		/*if(a.length == 0 || b.length == 0) {
-			return Double.POSITIVE_INFINITY;
-		}
-		if(a.length != b.length) {
-			throw new IllegalArgumentException();
-		}
-		int result = 0;
-		for(int i = 0; i < a.length; i++) {
-			result += Math.pow(b[i] - a[i], 2);
-		}
-		return Math.sqrt(result);*/
 	}
 	
 }
